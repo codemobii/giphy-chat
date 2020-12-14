@@ -62,7 +62,7 @@ code {
 .messages-container {
   flex: 1;
   min-height: 100px;
-  max-width: 1024px;
+  width: 100%;
   margin: auto;
   overflow: auto;
   background-color: #303030;
@@ -76,8 +76,6 @@ code {
 
 .message-item {
   width: 100%;
-  border-radius: 4px;
-  word-break: break-word;
   color: white;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   display: flex;
@@ -101,6 +99,7 @@ code {
   bottom: 5px;
   left: 10px;
   font-size: 12px;
+  display: block;
 }
 
 .chat_box_container {

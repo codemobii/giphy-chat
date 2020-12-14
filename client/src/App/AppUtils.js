@@ -1,63 +1,54 @@
-// handle user media capture
-export function captureUserMedia(callback) {
-  var params = { audio: false, video: true };
+import { useEffect, useRef, useState } from "react";
+import socketIOClient, { Socket } from "socket.io-client";
 
-  navigator.getUserMedia(params, callback, (error) => {
-    alert(JSON.stringify(error));
-  });
-}
+const AppUtils = () => {
+  const [messages, setMessages] = useState([]); // Sent and received messages
+  const [users, setUsers] = useState([]);
+  const [fetching, setFetching] = useState(true); // Fetching state
 
-// handle S3 upload
-function getSignedUrl(file) {
-  let queryString =
-    "?objectName=" + file.id + "&contentType=" + encodeURIComponent(file.type);
-  return fetch("/s3/sign" + queryString)
-    .then((response) => {
-      return response.json();
-    })
-    .catch((err) => {
-      console.log("error: ", err);
+  // Always make sure the window is scrolled down to the last message.
+  const scrollToBottom = () => {
+    const chat = document.getElementById("chat");
+    chat.scrollTop = chat.scrollHeight;
+  };
+
+  let socket = socketIOClient("http://localhost:8000/");
+
+  useEffect(() => {
+    // How many users are in our socket?
+    socket.on("users", (msg) => {
+      setUsers(msg.users);
     });
-}
 
-function createCORSRequest(method, url) {
-  var xhr = new XMLHttpRequest();
+    // Load the last 10 messages in the window.
+    socket.on("init", (msg) => {
+      let msgReversed = msg.reverse();
 
-  if (xhr.withCredentials != null) {
-    xhr.open(method, url, true);
-  } else if (typeof XDomainRequest !== "undefined") {
-    // eslint-disable-next-line no-undef
-    xhr = new XDomainRequest();
-    xhr.open(method, url);
-  } else {
-    xhr = null;
-  }
-
-  return xhr;
-}
-
-export function S3Upload(fileInfo) {
-  //parameters: { type, data, id }
-  return new Promise((resolve, reject) => {
-    getSignedUrl(fileInfo).then((s3Info) => {
-      // upload to S3
-      var xhr = createCORSRequest("PUT", s3Info.signedUrl);
-
-      xhr.onload = function () {
-        if (xhr.status === 200) {
-          console.log(xhr.status);
-          resolve(true);
-        } else {
-          console.log(xhr.status);
-
-          reject(xhr.status);
-        }
-      };
-
-      xhr.setRequestHeader("Content-Type", fileInfo.type);
-      xhr.setRequestHeader("x-amz-acl", "public-read");
-
-      return xhr.send(fileInfo.data);
+      setMessages((messages) => [...messages, msgReversed]);
+      setFetching(false);
+      scrollToBottom();
     });
-  });
-}
+
+    // Update the chat if a new message is broadcasted.
+    socket.on("push", (msg) => {
+      setMessages((messages) => [...messages, msg]);
+      setFetching(false);
+      scrollToBottom();
+    });
+    return () => socket.disconnect();
+  }, [socket]);
+
+  // Sends a message to the server that
+  // forwards it to all users in the same room
+  const sendMessage = (name, content) => {
+    socket.emit("message", {
+      name: name,
+      content: content,
+    });
+    scrollToBottom();
+  };
+
+  return { messages, sendMessage, users, fetching };
+};
+
+export default AppUtils;

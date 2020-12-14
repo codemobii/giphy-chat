@@ -4,7 +4,8 @@ const http = require("http").Server(app);
 const path = require("path");
 const io = require("socket.io")(http, {
   cors: {
-    origin: "*",
+    origin: ["http://localhost:3000", "https://giphy-chat.vercel.app"],
+    credentials: true,
     methods: ["GET", "POST"],
   },
 });

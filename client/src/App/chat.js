@@ -49,7 +49,7 @@ export default class Chat extends Component {
   };
 
   componentDidMount() {
-    this.socket = io("https://giphy-chat-server.vercel.app/");
+    this.socket = io("http://localhost:8000/");
 
     // How many users are in our socket?
     this.socket.on("users", (msg) => {
@@ -66,7 +66,6 @@ export default class Chat extends Component {
         }),
         this.scrollToBottom
       );
-      console.log(msg);
     });
 
     // Update the chat if a new message is broadcasted.
@@ -145,7 +144,6 @@ export default class Chat extends Component {
   // Send video blob to server
 
   sendMessage = async (blob) => {
-    console.log("Image file", blob);
     const formData = new FormData();
     formData.append("file", blob);
     // replace this with your upload preset name
@@ -162,7 +160,6 @@ export default class Chat extends Component {
     )
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         this.setState({ name: res.public_id });
 
         // Send the new message to the server.
@@ -190,16 +187,7 @@ export default class Chat extends Component {
   };
 
   render() {
-    const {
-      chat,
-      content,
-      users,
-      loading,
-      videoRef,
-      setPlayBack,
-      show,
-      fetching,
-    } = this.state;
+    const { chat, content, users, loading, show, fetching } = this.state;
 
     return (
       <div className="chat-room-container">
@@ -219,7 +207,7 @@ export default class Chat extends Component {
           <div className="side_items">
             <iframe
               src="https://ghbtns.com/github-btn.html?user=ijelechimaobi&repo=giphy-chat&type=star&count=true"
-              frameborder="0"
+              frameBorder="0"
               scrolling="0"
               width="130"
               height="20"
