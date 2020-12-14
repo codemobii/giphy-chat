@@ -49,7 +49,7 @@ export default class Chat extends Component {
   };
 
   componentDidMount() {
-    this.socket = io("https://giphy-chat-server.vercel.app");
+    this.socket = io("https://giphy-chat-server.vercel.app/");
 
     // How many users are in our socket?
     this.socket.on("users", (msg) => {
@@ -163,7 +163,7 @@ export default class Chat extends Component {
       .then((res) => res.json())
       .then((res) => {
         console.log(res);
-        this.setState({ name: res.secure_url });
+        this.setState({ name: res.public_id });
 
         // Send the new message to the server.
         this.socket.emit("message", {
@@ -239,17 +239,10 @@ export default class Chat extends Component {
             <ol className="messages-list">
               {chat.map((message, i) => (
                 <li key={i} className={`message-item received-message`}>
-                  <video
-                    src={message.name}
-                    id="recording"
-                    width="140"
-                    height="100"
-                    autoPlay
-                    loop
-                    muted
-                    ref={videoRef}
-                    onCanPlay={setPlayBack}
-                  ></video>
+                  <img
+                    style={{ width: "140px", height: "100px" }}
+                    src={`https://res.cloudinary.com/digital-specie/video/upload/vs_40,dl_200,h_200,e_loop/${message.name}.gif`}
+                  />
                   <div className="message_info">
                     <p>{message.content}</p>
                     <span className="time_sent">
