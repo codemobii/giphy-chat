@@ -2,9 +2,6 @@ const express = require("express");
 const app = express();
 const http = require("http").Server(app);
 const path = require("path");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const multer = require("multer");
 const io = require("socket.io")(http, {
   cors: {
     origin: "*",
@@ -89,39 +86,6 @@ io.on("connection", (socket) => {
 });
 
 // Working on file uploads
-
-// enable CORS
-app.use(cors());
-// parse application/json
-app.use(bodyParser.json());
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// serving static files
-app.use("/uploads", express.static("uploads"));
-
-// handle storage using multer
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads");
-  },
-  filename: function (req, file, cb) {
-    cb(
-      null,
-      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
-    );
-  },
-});
-var upload = multer({ storage: storage });
-
-// handle single file upload
-app.post("/upload", upload.single("dataFile"), (req, res, next) => {
-  const file = req.file;
-  if (!file) {
-    return res.status(400).send({ message: "Please upload a file." });
-  }
-  return res.send({ message: "File uploaded successfully.", file });
-});
 
 // request handlers
 app.get("/", (req, res) => {

@@ -1,8 +1,7 @@
 /* eslint-disable */
-import React, { Component } from "react";
+import React, { Component, useRef } from "react";
 import io from "socket.io-client";
-import TimeAgo from "react-timeago";
-import Axios from "axios";
+import TimeAgo from "timeago-react";
 
 function log(msg) {
   logElement.innerHTML += msg + "\n";
@@ -11,7 +10,16 @@ function wait(delayInMS) {
   return new Promise((resolve) => setTimeout(resolve, delayInMS));
 }
 
-export default class Home extends Component {
+export default function Home(props) {
+  const videoRef = useRef();
+  const setPlayBack = () => {
+    videoRef.current.playbackRate = 5;
+  };
+
+  return <Chat {...props} setPlayBack={setPlayBack} videoRef={videoRef} />;
+}
+
+export class Chat extends Component {
   constructor(props) {
     super(props);
 
@@ -21,6 +29,9 @@ export default class Home extends Component {
       name: "hello",
       users: [],
       loading: false,
+      setPlayBack: props.setPlayBack,
+      videoRef: props.videoRef,
+      show: false,
     };
   }
 
@@ -93,21 +104,11 @@ export default class Home extends Component {
 
   // Save the message the user is typing in the input field.
   handleContent(event) {
-    this.setState({
-      content: event.target.value,
-    });
-  }
-
-  //
-  handleName(event) {
-    this.setState({
-      name: event.target.value,
-    });
-  }
-
-  handleSubmit(event) {
-    // Prevent the form to reload the current page.
-    event.preventDefault();
+    if (this.state.content.length < 100) {
+      this.setState({
+        content: event.target.value,
+      });
+    }
   }
 
   // Always make sure the window is scrolled down to the last message.
@@ -120,7 +121,7 @@ export default class Home extends Component {
     let preview = document.getElementById("preview");
     let recording = document.getElementById("recording");
 
-    this.setState({ loading: true });
+    this.setState({ show: true });
 
     let recordingTimeMS = 2000;
     navigator.mediaDevices
@@ -136,11 +137,39 @@ export default class Home extends Component {
       })
       .then(() => this.startRecording(preview.captureStream(), recordingTimeMS))
       .then(async (recordedChunks) => {
+        this.setState({ show: false, loading: true });
         let recordedBlob = new Blob(recordedChunks, {
           type: "video/webm",
         });
         recording.src = URL.createObjectURL(recordedBlob);
-        this.setState({ name: recording.src });
+
+        this.sendMessage(recordedBlob);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  // Send video blob to server
+
+  sendMessage = async (blob) => {
+    console.log("Image file", blob);
+    const formData = new FormData();
+    formData.append("file", blob);
+    // replace this with your upload preset name
+    formData.append("upload_preset", "zrhqsswu");
+    const options = {
+      method: "POST",
+      body: formData,
+    };
+
+    // replace cloudname with your Cloudinary cloud_name
+    return fetch(
+      "https://api.Cloudinary.com/v1_1/digital-specie/video/upload",
+      options
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        this.setState({ name: res.secure_url });
 
         // Send the new message to the server.
         this.socket.emit("message", {
@@ -162,38 +191,20 @@ export default class Home extends Component {
             loading: false,
           };
         }, this.scrollToBottom);
-        this.sendVideoToAPI(recordedBlob);
       })
       .catch((err) => console.log(err));
   };
 
-  // Send video blob to server
-
-  sendVideoToAPI = async (blob) => {
-    const formData = new FormData();
-    formData.append("dataFile", blob);
-    console.log(blob);
-    Axios({
-      method: "post",
-      url: "http://localhost:8000/upload",
-      headers: {
-        "X-Requested-With": "XMLHttpRequest",
-        "Access-Control-Allow-Origin": "*",
-      },
-      data: {
-        file: blob,
-      },
-    })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   render() {
-    const { chat, content, users, loading } = this.state;
+    const {
+      chat,
+      content,
+      users,
+      loading,
+      videoRef,
+      setPlayBack,
+      show,
+    } = this.state;
 
     return (
       <div className="chat-room-container">
@@ -206,7 +217,22 @@ export default class Home extends Component {
           loop
           muted
         ></video>
-        <h1 className="room-name">Room: {users.length}</h1>
+        <div className="header">
+          <div className="logo">
+            <span>💬</span>Giphy Chat
+          </div>
+          <div className="side_items">
+            <iframe
+              src="https://ghbtns.com/github-btn.html?user=ijelechimaobi&repo=giphy-chat&type=star&count=true"
+              frameborder="0"
+              scrolling="0"
+              width="130"
+              height="20"
+              title="GitHub"
+            ></iframe>
+            <div className="active_users">{users.length}</div>
+          </div>
+        </div>
         <div id="chat" className="messages-container">
           <ol className="messages-list">
             {chat.map((message, i) => (
@@ -214,29 +240,36 @@ export default class Home extends Component {
                 <video
                   src={message.name}
                   id="recording"
-                  width="160"
-                  height="120"
+                  width="140"
+                  height="100"
                   autoPlay
                   loop
                   muted
-                  playbackRate={2}
+                  ref={videoRef}
+                  onCanPlay={setPlayBack}
                 ></video>
-                {message.content}
-                <span style={{ display: "block", fontSize: 10, marginTop: 10 }}>
-                  <TimeAgo date={message.createdAt} />
-                </span>
+                <div className="message_info">
+                  <p>{message.content}</p>
+                  <span className="time_sent">
+                    <TimeAgo live={true} datetime={message.createdAt} />
+                  </span>
+                </div>
               </li>
             ))}
           </ol>
         </div>
-        <div>
-          <video id="preview" width="160" height="120" autoPlay muted></video>
+        <div className="chat_box_container">
+          <span className={`recording_state ${show ? "show" : null}`}>
+            Smile, am recording naw 😎
+          </span>
+          <video id="preview" width="140" height="100" autoPlay muted></video>
           <textarea
             value={content}
             onChange={this.handleContent.bind(this)}
             placeholder="Write message..."
             className="new-message-input-field"
           />
+          <span className="text_counter">{content.length}/100</span>
         </div>
         <button onClick={this.record} className="send-message-button">
           {loading ? "Sending ..." : "Send"}

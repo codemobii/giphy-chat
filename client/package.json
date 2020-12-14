@@ -16,6 +16,7 @@
     "recordrtc": "^5.6.1",
     "socket.io-client": "^3.0.4",
     "styled-components": "^5.2.1",
+    "timeago-react": "^3.0.1",
     "videojs-record": "^4.1.1",
     "web-vitals": "^0.2.4",
     "webrtc-adapter": "^7.7.0"

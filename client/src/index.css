@@ -1,49 +1,16 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap");
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family: "Nunito", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #212121;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
-
-.home-container {
-  position: fixed;
-  left: 10%;
-  right: 10%;
-  top: 50%;
-  transform: translate(0, -50%);
-  display: flex;
-  flex-direction: column;
-}
-
-.text-input-field {
-  padding: 24px 12px;
-  border-radius: 7px;
-  font-size: 24px;
-}
-
-.text-input-field:focus {
-  outline: none;
-}
-
-.enter-room-button {
-  margin-top: 20px;
-  padding: 24px 12px;
-  font-size: 28px;
-  background: #31a24c;
-  color: white;
-  font-weight: 600;
-  text-align: center;
-  text-decoration: none;
-  border-radius: 7px;
-}
-
 .chat-room-container {
   position: fixed;
   left: 0;
@@ -52,19 +19,54 @@ code {
   bottom: 0;
   display: flex;
   flex-direction: column;
-  margin: 16px;
 }
 
-.room-name {
-  margin-top: 0;
+.header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 20px;
+  background-color: #31a24c;
+}
+
+.logo {
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.logo span {
+  margin-right: 6px;
+}
+
+.side_items {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.active_users {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+  border: 1px solid #eeeeee;
+  font-weight: bold;
+  color: #eeeeee;
 }
 
 .messages-container {
   flex: 1;
   min-height: 100px;
+  max-width: 1024px;
+  margin: auto;
   overflow: auto;
-  border: 1px solid black;
-  border-radius: 7px 7px 0 0;
+  background-color: #303030;
+  transition: all 0.3s ease;
 }
 
 .messages-list {
@@ -72,44 +74,85 @@ code {
   padding: 0;
 }
 
-.new-message-input-field {
-  height: 100px;
-  font-size: 20px;
-  padding: 8px 12px;
-  resize: horizontal;
-}
-
 .message-item {
-  width: 55%;
-  margin: 8px;
-  padding: 12px 8px;
-  word-break: break-word;
-  border-radius: 4px;
-  color: white;
-}
-
-.my-message {
-  background-color: rgb(0, 132, 255);
-  margin-left: auto;
-}
-
-.received-message {
-  background-color: #3f4042;
-  margin-right: auto;
   width: 100%;
+  border-radius: 4px;
+  word-break: break-word;
+  color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: flex-start;
+}
+
+.message_info {
+  padding: 10px;
+  display: block;
+  position: relative;
+  height: 100px;
+}
+
+.message_info p {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.time_sent {
+  position: absolute;
+  bottom: 5px;
+  left: 10px;
+  font-size: 12px;
+}
+
+.chat_box_container {
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+}
+
+.new-message-input-field {
+  width: 100%;
+  height: 100%;
+  color: #eeeeee;
+  border: none;
+  background-color: transparent;
+  padding: 10px;
+  font-size: 13px;
+}
+
+.text_counter {
+  position: absolute;
+  bottom: 0;
+  right: 10px;
+  font-size: 10px;
+  color: #cccccc;
+}
+
+.recording_state {
+  position: absolute;
+  top: -40px;
+  display: block;
+  width: 100%;
+  padding: 6px;
+  text-align: center;
+  color: #ffffff;
+  background-color: #fecd64;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(40px);
+}
+
+.show {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0px);
 }
 
 .send-message-button {
-  font-size: 22px;
+  font-size: 14px;
   font-weight: 600;
   color: white;
   background: #31a24c;
-  padding: 15px 12px;
+  padding: 8px 12px;
   border: none;
-}
-
-.messages-container,
-.new-message-input-field,
-.send-message-button {
-  border-color: #9a9a9a;
 }
