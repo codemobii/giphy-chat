@@ -1,10 +1,11 @@
 const express = require("express");
 const app = express();
-const http = require("http").Server(app);
+const http = require("http");
 const path = require("path");
-const io = require("socket.io")(http, {
+var server = http.createServer(app);
+const io = require("socket.io")(server, {
   cors: {
-    origin: "*",
+    origin: ["http://localhost:3000", "https://giphy-chat.vercel.app"],
     credentials: true,
     methods: ["GET", "POST"],
   },
@@ -23,7 +24,7 @@ mongoose
     useFindAndModify: false,
   })
   .then((result) => {
-    http.listen(port, () => {
+    server.listen(port, () => {
       console.log(`Listening on port ${port}...`);
     });
   })
