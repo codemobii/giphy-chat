@@ -7,8 +7,8 @@ const expressStatusMonitor = require("express-status-monitor");
 const io = require("socket.io")(http, {
   cors: {
     origin: "*",
+    methods: "GET,PUT,POST,DELETE,OPTIONS".split(","),
     credentials: true,
-    methods: ["GET", "POST"],
   },
 });
 
