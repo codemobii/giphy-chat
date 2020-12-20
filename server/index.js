@@ -2,13 +2,23 @@ const express = require("express");
 const app = express();
 const http = require("http").Server(app);
 const path = require("path");
+const expressStatusMonitor = require("express-status-monitor");
+
 const io = require("socket.io")(http, {
   cors: {
-    origin: ["http://localhost:3000", "https://giphy-chat.vercel.app"],
+    origin: "*",
     credentials: true,
     methods: ["GET", "POST"],
   },
 });
+
+app.use(
+  expressStatusMonitor({
+    websocket: io,
+    port: app.get("8000"),
+  })
+);
+
 const { MONGODB_URI } = require("./config");
 
 const port = process.env.PORT || 8000;

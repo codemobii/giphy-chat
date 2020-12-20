@@ -49,7 +49,9 @@ export default class Chat extends Component {
   };
 
   componentDidMount() {
-    this.socket = io("https://giphy-chat-server.vercel.app/");
+    this.socket = io("https://giphy-chat-server.vercel.app/", {
+      transports: ["websocket"],
+    });
 
     // How many users are in our socket?
     this.socket.on("users", (msg) => {
