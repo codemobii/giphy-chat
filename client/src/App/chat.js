@@ -49,7 +49,7 @@ export default class Chat extends Component {
   };
 
   componentDidMount() {
-    this.socket = io("http://localhost:8000/");
+    this.socket = io("https://giphy-chat-server.vercel.app/");
 
     // How many users are in our socket?
     this.socket.on("users", (msg) => {
@@ -153,6 +153,7 @@ export default class Chat extends Component {
       body: formData,
     };
 
+    // replace cloudname with your Cloudinary cloud_name
     return fetch(
       "https://api.Cloudinary.com/v1_1/digital-specie/video/upload",
       options
@@ -228,7 +229,7 @@ export default class Chat extends Component {
                 <li key={i} className={`message-item received-message`}>
                   <img
                     style={{ width: "140px", height: "100px" }}
-                    src={`https://res.cloudinary.com/digital-specie/video/upload/vs_40,dl_100,h_200,e_loop/${message.name}.gif`}
+                    src={`https://res.cloudinary.com/digital-specie/video/upload/vs_40,dl_50,h_200,e_loop/${message.name}.gif`}
                   />
                   <div className="message_info">
                     <p>{message.content}</p>
