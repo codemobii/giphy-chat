@@ -55,7 +55,7 @@ mongoose
 
 // listen for requests
 server.listen(8000, () => {
-  console.log("Server is listening on port 5000");
+  console.log("Server is listening on port 8000");
 });
 
 // define a simple route
