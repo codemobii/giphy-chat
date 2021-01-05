@@ -66,6 +66,7 @@ export default class Chat extends Component {
         }),
         this.scrollToBottom
       );
+      console.log(msg);
     });
 
     // Update the chat if a new message is broadcasted.
@@ -229,10 +230,10 @@ export default class Chat extends Component {
                 <li key={i} className={`message-item received-message`}>
                   <img
                     style={{ width: "140px", height: "100px" }}
-                    src={`https://res.cloudinary.com/digital-specie/video/upload/vs_40,dl_50,h_200,e_loop/${message.name}.gif`}
+                    src={`https://res.cloudinary.com/digital-specie/video/upload/vs_40,dl_50,h_200,e_loop/${message.gif}.gif`}
                   />
                   <div className="message_info">
-                    <p>{message.content}</p>
+                    <p>{message.message}</p>
                     <span className="time_sent">
                       <TimeAgo live={true} datetime={message.createdAt} />
                     </span>
