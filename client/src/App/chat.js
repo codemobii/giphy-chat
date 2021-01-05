@@ -49,7 +49,7 @@ export default class Chat extends Component {
   };
 
   componentDidMount() {
-    this.socket = io("https://giphy-chat-server.vercel.app/");
+    this.socket = io("http://localhost:5000/");
 
     // How many users are in our socket?
     this.socket.on("users", (msg) => {
@@ -164,8 +164,8 @@ export default class Chat extends Component {
 
         // Send the new message to the server.
         this.socket.emit("message", {
-          name: this.state.name,
-          content: this.state.content,
+          gif: this.state.name,
+          message: this.state.content,
         });
 
         this.setState((state) => {
@@ -174,8 +174,8 @@ export default class Chat extends Component {
             chat: [
               ...state.chat,
               {
-                name: state.name,
-                content: state.content,
+                gif: state.name,
+                message: state.content,
               },
             ],
             content: "",

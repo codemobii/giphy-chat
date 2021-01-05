@@ -1,9 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
-const http = require("http");
-const server = http.createServer(app);
-const io = require("socket.io")(server, {
+const http = require("http").Server(app);
+const io = require("socket.io")(http, {
   cors: {
     origin: ["http://localhost:3000", "https://giphy-chat.vercel.app"],
     credentials: true,
@@ -54,7 +53,7 @@ mongoose
   });
 
 // listen for requests
-server.listen(8000, () => {
+http.listen(5000, () => {
   console.log("Server is listening on port 8000");
 });
 
@@ -86,8 +85,8 @@ io.on("connection", (socket) => {
   socket.on("message", (msg) => {
     // Create a message with the content and the name of the user.
     const message = new Message({
-      content: msg.content,
-      name: msg.name,
+      message: msg.content,
+      gif: msg.name,
     });
 
     // Save the message to the database.
