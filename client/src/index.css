@@ -100,6 +100,7 @@ code {
   left: 10px;
   font-size: 12px;
   display: block;
+  width: 100%;
 }
 
 .chat_box_container {

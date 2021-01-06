@@ -3,6 +3,7 @@ import React, { Component, useRef } from "react";
 import io from "socket.io-client";
 import Fadeloader from "react-spinners/FadeLoader";
 import TimeAgo from "timeago-react";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 function log(msg) {
   logElement.innerHTML += msg + "\n";
@@ -66,7 +67,6 @@ export default class Chat extends Component {
         }),
         this.scrollToBottom
       );
-      console.log(msg);
     });
 
     // Update the chat if a new message is broadcasted.
@@ -228,15 +228,17 @@ export default class Chat extends Component {
             <ol className="messages-list">
               {chat.map((message, i) => (
                 <li key={i} className={`message-item received-message`}>
-                  <img
-                    style={{ width: "140px", height: "100px" }}
+                  <LazyLoadImage
+                    alt="Giphy Chat GIF"
+                    height="100px"
                     src={`https://res.cloudinary.com/digital-specie/video/upload/vs_40,dl_50,h_200,e_loop/${message.gif}.gif`}
+                    width="140px"
                   />
                   <div className="message_info">
                     <p>{message.message}</p>
-                    <span className="time_sent">
+                    <p className="time_sent">
                       <TimeAgo live={true} datetime={message.createdAt} />
-                    </span>
+                    </p>
                   </div>
                 </li>
               ))}
