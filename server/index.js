@@ -85,8 +85,8 @@ io.on("connection", (socket) => {
   socket.on("message", (msg) => {
     // Create a message with the content and the name of the user.
     const message = new Message({
-      message: msg.content,
-      gif: msg.name,
+      message: msg.message,
+      gif: msg.gif,
     });
 
     // Save the message to the database.

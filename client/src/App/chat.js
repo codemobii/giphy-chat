@@ -49,7 +49,7 @@ export default class Chat extends Component {
   };
 
   componentDidMount() {
-    this.socket = io("http://localhost:5000/");
+    this.socket = io("https://giphy-chat-server.herokuapp.com/");
 
     // How many users are in our socket?
     this.socket.on("users", (msg) => {
