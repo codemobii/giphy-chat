@@ -20,7 +20,7 @@ export default class GiphyUtils extends Component {
     };
   }
 
-  // Initialize the audio pls
+  // Initialize the audio here
 
   audio = new Audio(popSoundSrc);
 
