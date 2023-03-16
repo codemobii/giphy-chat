@@ -135,7 +135,7 @@ export default class GiphyUtils extends Component {
     const formData = new FormData();
     formData.append("file", blob);
     // replace this with your upload preset name
-    formData.append("upload_preset", "zrhqsswu");
+    formData.append("upload_preset", "ml_default");
     const options = {
       method: "POST",
       body: formData,
