@@ -34,7 +34,7 @@ export default class GiphyUtils extends Component {
   connectServer = () => {
     this.setState({ whatIsLoading: 2 });
 
-    this.socket = io("https://giphy-chat-server.herokuapp.com/");
+    this.socket = io("https://yacht-socket.herokuapp.com/");
 
     // How many users are in our socket?
     this.socket.on("users", (res) => {
